@@ -1,17 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Pessoa } from '../../shared/models/pessoa.model';
 
-const LS_CHAVE = "pessoas";
+const LS_CHAVE = 'pessoas';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class AutocadastroService {
 
-  constructor() { }
+/*NAO ESTA SENDO UTILIZADO*/
+/*NAO ESTA SENDO UTILIZADO*/
+/*NAO ESTA SENDO UTILIZADO*/
+/*NAO ESTA SENDO UTILIZADO*/
+/*NAO ESTA SENDO UTILIZADO*/
+/*NAO ESTA SENDO UTILIZADO*/
+export class AutocadastroService {
+  constructor() {}
 
   listarTodos(): Pessoa[] {
-    
     const pessoas = localStorage[LS_CHAVE];
     // Precisa do condicional, pois retornar undefined se a chave não existe
     return pessoas ? JSON.parse(pessoas) : [];
@@ -22,8 +27,8 @@ export class AutocadastroService {
     const pessoas = this.listarTodos();
 
     // Verifica se já existe uma pessoa com o mesmo CPF ou e-mail
-    const cpfExistente = pessoas.some(p => p.cpf === pessoa.cpf);
-    const emailExistente = pessoas.some(p => p.email === pessoa.email);
+    const cpfExistente = pessoas.some((p) => p.cpf === pessoa.cpf);
+    const emailExistente = pessoas.some((p) => p.email === pessoa.email);
 
     if (cpfExistente) {
       alert('Este CPF já está cadastrado.');
@@ -39,8 +44,7 @@ export class AutocadastroService {
     pessoas.push(pessoa);
     localStorage[LS_CHAVE] = JSON.stringify(pessoas);
 
-    alert("Autocadastro concluído com sucesso!");
+    alert('Autocadastro concluído com sucesso!');
     return true;
   }
-  
 }

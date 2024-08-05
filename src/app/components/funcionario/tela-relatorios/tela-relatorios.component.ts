@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RouterLink, RouterModule } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { LoginService } from '../../../services/login/login.service';
 import { Pessoa } from '../../../shared/models/pessoa.model';
 import { AutocadastroService } from '../../../services/autocadastro/autocadastro.service';
@@ -24,7 +24,8 @@ export class TelaRelatoriosComponent implements OnInit {
   constructor(
     private loginService: LoginService,
     private autocadastroService: AutocadastroService,
-    private pedidoService: PedidoService
+    private pedidoService: PedidoService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -243,5 +244,16 @@ export class TelaRelatoriosComponent implements OnInit {
 
       doc.save('Relatorio_Clientes_Fieis.pdf');
     });
+  }
+
+  // Confirma o logout do usuário
+  confirmarLogout(event: Event): void {
+    event.preventDefault();
+
+    const confirmed = window.confirm('Você realmente deseja sair?');
+    if (confirmed) {
+      this.loginService.logout();
+      this.router.navigate(['/login']); // Redireciona para a tela de login após o logout
+    }
   }
 }

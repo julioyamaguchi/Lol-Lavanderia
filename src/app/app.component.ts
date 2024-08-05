@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AutocadastroComponent } from './components/autocadastro/autocadastro.component';
-import { LoginComponent } from './components/login/login.component';
+import { LoginComponent } from './auth/login/login.component';
 import { InicialClienteComponent } from './components/inicial-cliente/inicial-cliente.component';
 import { ModalOrcamentoComponent } from './components/modal-orcamento/modal-orcamento.component';
 import { ConsultarPedidoComponent } from './components/consultar-pedido/consultar-pedido.component';
@@ -18,7 +18,6 @@ import { FormsModule } from '@angular/forms';
 import { CadastrarPecaRoupaComponent } from './components/funcionario/cadastrar-peca-roupa/cadastrar-peca-roupa.component';
 import { EditarPecaRoupaComponent } from './components/funcionario/editar-peca-roupa/editar-peca-roupa.component';
 import { HttpClientModule } from '@angular/common/http';
-
 
 @Component({
   selector: 'app-root',
@@ -45,7 +44,7 @@ import { HttpClientModule } from '@angular/common/http';
     CadastrarPecaRoupaComponent,
     // EditarPecaRoupaComponent,
     ModalOrcamentoComponent,
-    HttpClientModule
+    HttpClientModule,
   ],
 })
 export class AppComponent {

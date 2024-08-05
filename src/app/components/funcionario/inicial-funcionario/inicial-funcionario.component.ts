@@ -11,10 +11,9 @@ import { LoginService } from '../../../services/login/login.service';
   standalone: true,
   imports: [CommonModule, RouterModule, RouterLink, FormsModule],
   templateUrl: './inicial-funcionario.component.html',
-  styleUrls: ['./inicial-funcionario.component.css']
+  styleUrls: ['./inicial-funcionario.component.css'],
 })
 export class InicialFuncionarioComponent implements OnInit {
-
   pedidos: Pedido[] = [];
   pedidosFiltrados: Pedido[] = []; // Armazena os pedidos filtrados com base no status selecionado.
   filtroStatus: string = 'em_aberto'; // Inicia com 'em_aberto'
@@ -25,7 +24,7 @@ export class InicialFuncionarioComponent implements OnInit {
     private pedidoService: PedidoService,
     private router: Router,
     private loginService: LoginService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.carregarPedidos(); // Inicia o carregamento dos pedidos
@@ -41,7 +40,7 @@ export class InicialFuncionarioComponent implements OnInit {
         this.mensagem = 'Erro ao carregar pedidos.';
         this.mensagem_detalhes = `[${err.status}] ${err.message}`;
         console.error('Erro ao carregar pedidos:', err);
-      }
+      },
     });
   }
 
@@ -60,7 +59,7 @@ export class InicialFuncionarioComponent implements OnInit {
           this.mensagem = 'Erro ao atualizar pedido.';
           this.mensagem_detalhes = `[${err.status}] ${err.message}`;
           console.error('Erro ao atualizar pedido:', err);
-        }
+        },
       });
     }
   }
@@ -80,7 +79,7 @@ export class InicialFuncionarioComponent implements OnInit {
           this.mensagem = 'Erro ao atualizar pedido.';
           this.mensagem_detalhes = `[${err.status}] ${err.message}`;
           console.error('Erro ao atualizar pedido:', err);
-        }
+        },
       });
     }
   }
@@ -100,7 +99,7 @@ export class InicialFuncionarioComponent implements OnInit {
           this.mensagem = 'Erro ao atualizar pedido.';
           this.mensagem_detalhes = `[${err.status}] ${err.message}`;
           console.error('Erro ao atualizar pedido:', err);
-        }
+        },
       });
     }
   }
@@ -109,19 +108,21 @@ export class InicialFuncionarioComponent implements OnInit {
     if (this.filtroStatus === 'todos') {
       this.pedidosFiltrados = this.pedidos;
     } else {
-      this.pedidosFiltrados = this.pedidos.filter(pedido => pedido.statuspedido === this.mapStatus(this.filtroStatus));
+      this.pedidosFiltrados = this.pedidos.filter(
+        (pedido) => pedido.statuspedido === this.mapStatus(this.filtroStatus)
+      );
     }
   }
 
   mapStatus(status: string): string {
     const statusMap: { [key: string]: string } = {
-      'em_aberto': 'EM ABERTO',
-      'cancelado': 'CANCELADO',
-      'rejeitado': 'REJEITADO',
-      'recolhido': 'RECOLHIDO',
-      'aguardando_pagamento': 'AGUARDANDO PAGAMENTO',
-      'pago': 'PAGO',
-      'finalizado': 'FINALIZADO'
+      em_aberto: 'EM ABERTO',
+      cancelado: 'CANCELADO',
+      rejeitado: 'REJEITADO',
+      recolhido: 'RECOLHIDO',
+      aguardando_pagamento: 'AGUARDANDO PAGAMENTO',
+      pago: 'PAGO',
+      finalizado: 'FINALIZADO',
     };
     return statusMap[status] || status;
   }
@@ -129,23 +130,23 @@ export class InicialFuncionarioComponent implements OnInit {
   getStatusClass(status: string): string {
     const statusClassMap: { [key: string]: string } = {
       'EM ABERTO': 'status-em-aberto',
-      'CANCELADO': 'status-cancelado',
-      'REJEITADO': 'status-rejeitado',
-      'RECOLHIDO': 'status-recolhido',
+      CANCELADO: 'status-cancelado',
+      REJEITADO: 'status-rejeitado',
+      RECOLHIDO: 'status-recolhido',
       'AGUARDANDO PAGAMENTO': 'status-aguardando-pagamento',
-      'PAGO': 'status-pago',
-      'FINALIZADO': 'status-finalizado'
+      PAGO: 'status-pago',
+      FINALIZADO: 'status-finalizado',
     };
     return statusClassMap[status] || '';
   }
 
   confirmarLogout(event: Event): void {
     event.preventDefault();
-    
+
     const confirmed = window.confirm('Você realmente deseja sair?');
     if (confirmed) {
       this.loginService.logout();
-      this.router.navigate(['inicio/login']); // Redireciona para a tela de login após o logout
+      this.router.navigate(['/login']); // Redireciona para a tela de login após o logout
     }
   }
 }

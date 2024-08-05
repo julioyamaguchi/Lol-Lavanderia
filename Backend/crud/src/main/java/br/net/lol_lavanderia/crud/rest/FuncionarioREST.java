@@ -1,7 +1,6 @@
 package br.net.lol_lavanderia.crud.rest;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;

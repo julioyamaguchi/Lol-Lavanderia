@@ -1,29 +1,44 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { NgForm, FormsModule, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { AutocadastroService } from '../../services/autocadastro/autocadastro.service';
-import { Pessoa } from '../../shared/models/pessoa.model';
+import {
+  NgForm,
+  FormsModule,
+  AbstractControl,
+  ValidationErrors,
+  ValidatorFn,
+} from '@angular/forms';
+import { UsuarioService } from '../../services/usuario.service';
+import { Usuario } from '../../shared/models/usuario.model';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 
-
 @Component({
   selector: 'app-autocadastro',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, RouterLink, NgxMaskDirective, NgxMaskPipe],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    RouterLink,
+    NgxMaskDirective,
+    NgxMaskPipe,
+  ],
   templateUrl: './autocadastro.component.html',
-  styleUrl: './autocadastro.component.css'
+  styleUrls: ['./autocadastro.component.css'],
 })
-
 export class AutocadastroComponent implements OnInit, OnDestroy {
-
   @ViewChild('autocadastroForm') autocadastroForm!: NgForm;
-  pessoa: Pessoa = new Pessoa();
-  pessoaCadastrada: Pessoa | null = null;
-  senhaGerada: string = "";
+  usuario: Usuario = new Usuario();
+  usuarioCadastrado: Usuario | null = null;
+  senhaGerada: string = '';
+  message!: string;
 
-  constructor(private autocadastroService: AutocadastroService, private router: Router, private http: HttpClient) { }
+  constructor(
+    private usuarioService: UsuarioService,
+    private router: Router,
+    private http: HttpClient
+  ) {}
 
   // Código para ocultar o cabeçalho padrão do sistema nessa página
   ngOnInit(): void {
@@ -39,13 +54,14 @@ export class AutocadastroComponent implements OnInit, OnDestroy {
     if (cep) {
       cep = cep.replace(/\D/g, ''); // Remove caracteres não numéricos
 
-      if (cep.length === 8) { // Verifica se o CEP tem 8 dígitos
+      if (cep.length === 8) {
+        // Verifica se o CEP tem 8 dígitos
         this.http.get(`https://viacep.com.br/ws/${cep}/json/`).subscribe({
           next: (data: any) => {
             if (!data.erro) {
-              this.pessoa.rua = data.logradouro;
-              this.pessoa.cidade = data.localidade;
-              this.pessoa.estado = data.uf;
+              this.usuario.rua = data.logradouro;
+              this.usuario.cidade = data.localidade;
+              this.usuario.estado = data.uf;
             } else {
               // CEP não encontrado
               console.log('CEP não encontrado');
@@ -53,7 +69,7 @@ export class AutocadastroComponent implements OnInit, OnDestroy {
           },
           error: (error: any) => {
             console.error('Erro ao buscar o CEP:', error);
-          }
+          },
         });
       } else {
         console.log('CEP inválido');
@@ -69,16 +85,23 @@ export class AutocadastroComponent implements OnInit, OnDestroy {
   inserir(): void {
     if (this.autocadastroForm.form.valid) {
       this.gerarSenhaAleatoria();
-      this.pessoa.senha = this.senhaGerada;
+      this.usuario.senha = this.senhaGerada;
 
-      const sucesso = this.autocadastroService.inserir(this.pessoa);
-      if (sucesso) {
-        this.pessoaCadastrada = { ...this.pessoa };
-        this.pessoa = new Pessoa();
-        this.exibirAlerta();
-      } else {
-        console.log('Falha ao cadastrar: CPF ou e-mail já cadastrado.');
-      }
+      this.usuarioService.inserir(this.usuario).subscribe({
+        next: (usuario) => {
+          if (usuario) {
+            this.usuarioCadastrado = { ...this.usuario };
+            this.usuario = new Usuario();
+            this.exibirAlerta();
+            this.router.navigateByUrl('/login'); // Redireciona para a tela de login após o cadastro
+          } else {
+            this.message = 'Falha ao cadastrar: CPF ou e-mail já cadastrado.';
+          }
+        },
+        error: (err) => {
+          this.message = `Erro ao cadastrar usuário: ${err.message}`;
+        },
+      });
     }
   }
 
@@ -90,21 +113,24 @@ export class AutocadastroComponent implements OnInit, OnDestroy {
   }
 
   onFocusTelefone() {
-    if (!this.pessoa.telefone) {
-      this.pessoa.telefone = '';
+    if (!this.usuario.telefone) {
+      this.usuario.telefone = '';
     }
   }
 
-  // NÃO ESTÁ FUNCIONANDO
-  emailValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  emailValidator: ValidatorFn = (
+    control: AbstractControl
+  ): ValidationErrors | null => {
     const email = control.value as string;
     if (!email) {
-      return { 'required': true };
+      return { required: true };
     }
-    if (!email.includes('@') || !(email.endsWith('.com') || email.endsWith('.com.br'))) {
-      return { 'emailInvalid': true };
+    if (
+      !email.includes('@') ||
+      !(email.endsWith('.com') || email.endsWith('.com.br'))
+    ) {
+      return { emailInvalid: true };
     }
     return null;
   };
-
 }

@@ -42,9 +42,9 @@ public class UsuarioREST {
 
   @PostMapping("/usuarios")
   public ResponseEntity<Usuario> inserirUsuario(@RequestBody Usuario usuario) {
-    // Verifica se já existe um usuário com o mesmo email
+    // Verifica se já existe um usuário com o mesmo email ou CPF
     Usuario u = lista.stream()
-        .filter(usu -> usu.getEmail().equals(usuario.getEmail()))
+        .filter(usu -> usu.getEmail().equals(usuario.getEmail()) || usu.getCpf().equals(usuario.getCpf()))
         .findAny()
         .orElse(null);
     if (u != null) {

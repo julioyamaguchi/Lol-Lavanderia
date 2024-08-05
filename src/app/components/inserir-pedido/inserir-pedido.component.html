@@ -6,7 +6,7 @@
   <a [routerLink]="['/inicio-cliente']" class="nav-item">Início</a>
   <a [routerLink]="['/consultar-pedido']" class="nav-item">Consultar Pedido</a>
   <a [routerLink]="['/fazer-pedido']" class="nav-item">Fazer pedido</a>
-  <a [routerLink]="['/inicio/login']" class="nav-item">Sair</a>
+  <a href="#" (click)="confirmarLogout($event)" class="nav-item">Sair</a>
 </nav>
 
 <div class="conteudo-principal">
@@ -29,12 +29,10 @@
         <td class="info-pecaroupa">{{ prazosMap[pecaroupa.pecaroupa.id] || 'Prazo não encontrado' }}</td>
         <td class="text-center">
           <div class="button-container">
-            <a href="#" title="Editar" alt="Editar" class="btn btn-xs btn-info"
-              [routerLink]="['/editar-peca-roupa-quantidade', pecaroupa.id]">
+            <a href="#" title="Editar" alt="Editar" class="btn btn-xs btn-info" [routerLink]="['/editar-peca-roupa-quantidade', pecaroupa.id]">
               <i class="fa fa-edit" aria-hidden="true"></i> Editar
             </a>
-            <a href="#" title="Remover" alt="Remover" class="btn btn-xs btn-danger"
-              (click)="remover($event, pecaroupa)">
+            <a href="#" title="Remover" alt="Remover" class="btn btn-xs btn-danger" (click)="remover($event, pecaroupa)">
               <i class="fa fa-times" aria-hidden="true"></i> Remover
             </a>
           </div>
@@ -52,8 +50,6 @@
       <i class="fa fa-save" aria-hidden="true"></i> Concluir pedido
     </button>
   </div>
-  <app-modal-orcamento [valorPedido]="valorPedido" [prazoMaximo]="prazoMaximo" 
-    (aprovar)="aprovarPedido()"
-    (recusar)="onRecusar()">
+  <app-modal-orcamento [valorPedido]="valorPedido" [prazoMaximo]="prazoMaximo" (aprovar)="aprovarPedido()" (recusar)="onRecusar()">
   </app-modal-orcamento>
 </div>

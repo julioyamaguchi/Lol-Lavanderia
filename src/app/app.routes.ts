@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './components/login/login.component';
+import { LoginComponent } from './auth/login/login.component';
 import { AutocadastroComponent } from './components/autocadastro/autocadastro.component';
 import { InicialClienteComponent } from './components/inicial-cliente/inicial-cliente.component';
 import { ConsultarPedidoComponent } from './components/consultar-pedido/consultar-pedido.component';
@@ -16,24 +16,100 @@ import { InserirPedidoComponent } from './components/inserir-pedido/inserir-pedi
 import { Component } from '@angular/core';
 import { FormularioPecaRoupaComponent } from './components/formulario-peca-roupa/formulario-peca-roupa.component';
 import { EditarPecaRoupaQuantidadeComponent } from './components/editar-peca-roupa-quantidade/editar-peca-roupa-quantidade.component';
+import { authGuard } from './auth/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'inicio/login', component: LoginComponent }, //provavelmente vai ter q apagar
-  { path: 'inicio', redirectTo: 'inicio/login' }, //provavelmente vai ter q apagar
   { path: 'autocadastro', component: AutocadastroComponent },
-  { path: 'inicio-cliente', component: InicialClienteComponent },
-  { path: 'consultar-pedido', component: ConsultarPedidoComponent },
-  { path: 'fazer-pedido', component: FazerPedidoComponent },
-  { path: 'inicio-funcionario', component: InicialFuncionarioComponent },
-  { path: 'cadastrar-funcionario', component: CadastrarFuncionarioComponent },
-  { path: 'manutencao-roupas', component: ManutencaoRoupasComponent },
-  { path: 'editar-funcionario/:id', component: EditarFuncionarioComponent },
+  {
+    path: 'inicio-cliente',
+    component: InicialClienteComponent,
+    canActivate: [authGuard],
+    data: {
+      role: 'CLIENTE',
+    },
+  },
+  {
+    path: 'consultar-pedido',
+    component: ConsultarPedidoComponent,
+    canActivate: [authGuard],
+    data: {
+      role: 'CLIENTE',
+    },
+  },
+  {
+    path: 'fazer-pedido',
+    component: FazerPedidoComponent,
+    canActivate: [authGuard],
+    data: {
+      role: 'CLIENTE',
+    },
+  },
+  {
+    path: 'inicio-funcionario',
+    component: InicialFuncionarioComponent,
+    canActivate: [authGuard],
+    data: {
+      role: 'FUNCIONARIO',
+    },
+  },
+  {
+    path: 'cadastrar-funcionario',
+    component: CadastrarFuncionarioComponent,
+    canActivate: [authGuard],
+    data: {
+      role: 'FUNCIONARIO',
+    },
+  },
+  {
+    path: 'manutencao-roupas',
+    component: ManutencaoRoupasComponent,
+    canActivate: [authGuard],
+    data: {
+      role: 'FUNCIONARIO',
+    },
+  },
+  {
+    path: 'editar-funcionario/:id',
+    component: EditarFuncionarioComponent,
+    canActivate: [authGuard],
+    data: {
+      role: 'FUNCIONARIO',
+    },
+  },
 
-  { path: 'listar-funcionario', component: ListarFuncionarioComponent },
-  { path: 'relatorios', component: TelaRelatoriosComponent },
-  { path: 'cadastrar-peca-roupa', component: CadastrarPecaRoupaComponent },
-  { path: 'editar-peca-roupa/:id', component: EditarPecaRoupaComponent },
+  {
+    path: 'listar-funcionario',
+    component: ListarFuncionarioComponent,
+    canActivate: [authGuard],
+    data: {
+      role: 'FUNCIONARIO',
+    },
+  },
+  {
+    path: 'relatorios',
+    component: TelaRelatoriosComponent,
+    canActivate: [authGuard],
+    data: {
+      role: 'FUNCIONARIO',
+    },
+  },
+  {
+    path: 'cadastrar-peca-roupa',
+    component: CadastrarPecaRoupaComponent,
+    canActivate: [authGuard],
+    data: {
+      role: 'FUNCIONARIO',
+    },
+  },
+  {
+    path: 'editar-peca-roupa/:id',
+    component: EditarPecaRoupaComponent,
+    canActivate: [authGuard],
+    data: {
+      role: 'FUNCIONARIO',
+    },
+  },
 
   {
     path: 'inserir-pedido',

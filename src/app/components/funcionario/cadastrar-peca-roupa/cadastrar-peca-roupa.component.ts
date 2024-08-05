@@ -7,6 +7,7 @@ import { RoupasService } from '../../../services/roupas/roupas.service';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import { NgxCurrencyDirective } from 'ngx-currency';
 import { HttpClientModule } from '@angular/common/http';
+import { LoginService } from '../../../services/login/login.service';
 
 @Component({
   selector: 'app-cadastrar-peca-roupa',
@@ -19,7 +20,7 @@ import { HttpClientModule } from '@angular/common/http';
     NgxMaskDirective,
     NgxMaskPipe,
     NgxCurrencyDirective,
-    HttpClientModule
+    HttpClientModule,
   ],
   templateUrl: './cadastrar-peca-roupa.component.html',
   styleUrls: ['./cadastrar-peca-roupa.component.css'],
@@ -30,7 +31,11 @@ export class CadastrarPecaRoupaComponent {
   roupa: Roupas = new Roupas();
   isLoading = false;
 
-  constructor(private roupasService: RoupasService, private router: Router) {}
+  constructor(
+    private roupasService: RoupasService,
+    private router: Router,
+    private loginService: LoginService
+  ) {}
 
   inserir(): void {
     if (this.formRoupa.form.valid) {
@@ -44,8 +49,19 @@ export class CadastrarPecaRoupaComponent {
         error: (error) => {
           this.isLoading = false;
           alert(`Erro ao adicionar a peça: ${error.message}`);
-        }
+        },
       });
+    }
+  }
+
+  // Confirma o logout do usuário
+  confirmarLogout(event: Event): void {
+    event.preventDefault();
+
+    const confirmed = window.confirm('Você realmente deseja sair?');
+    if (confirmed) {
+      this.loginService.logout();
+      this.router.navigate(['/login']); // Redireciona para a tela de login após o logout
     }
   }
 }

@@ -25,8 +25,15 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (this.loginService.usuarioLogado) {
-      this.router.navigate(['/home']); //alterar aqui depois usuario logado n vai pra home aqui n existe
+    const usuarioLogado = this.loginService.usuarioLogado;
+    if (usuarioLogado) {
+      if (usuarioLogado.perfil === 'FUNCIONARIO') {
+        this.router.navigate(['/inicio-funcionario']);
+      } else if (usuarioLogado.perfil === 'CLIENTE') {
+        this.router.navigate(['/inicio-cliente']);
+      } else {
+        this.router.navigate(['/login']); // Padrão, se o perfil não corresponder
+      }
     } else {
       this.route.queryParams.subscribe((params) => {
         this.message = params['error'];

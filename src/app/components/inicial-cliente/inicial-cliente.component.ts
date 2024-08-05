@@ -12,9 +12,15 @@ import { HttpClientModule } from '@angular/common/http';
 @Component({
   selector: 'app-inicial-cliente',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterModule, FormsModule, HttpClientModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    RouterModule,
+    FormsModule,
+    HttpClientModule,
+  ],
   templateUrl: './inicial-cliente.component.html',
-  styleUrls: ['./inicial-cliente.component.css']
+  styleUrls: ['./inicial-cliente.component.css'],
 })
 export class InicialClienteComponent implements OnInit {
   pedidos: Pedido[] = [];
@@ -27,7 +33,7 @@ export class InicialClienteComponent implements OnInit {
     private pedidoService: PedidoService,
     private router: Router,
     private loginService: LoginService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.carregarPedidos(); // Inicia o carregamento de pedidos
@@ -44,7 +50,7 @@ export class InicialClienteComponent implements OnInit {
         this.mensagem = 'Erro ao carregar pedidos.';
         this.mensagem_detalhes = `[${err.status}] ${err.message}`;
         console.error('Erro ao carregar pedidos:', err.message);
-      }
+      },
     });
   }
 
@@ -65,7 +71,7 @@ export class InicialClienteComponent implements OnInit {
           this.mensagem = 'Erro ao atualizar pedido.';
           this.mensagem_detalhes = '[${err.status}] ${err.message}';
           console.error('Erro ao atualizar pedido:', err.message);
-        }
+        },
       });
     }
   }
@@ -73,7 +79,10 @@ export class InicialClienteComponent implements OnInit {
   // Realiza o pagamento do pedido e atualiza a lista
   pagar($event: any, pedido: Pedido): void {
     $event.preventDefault();
-    if (pedido.statuspedido === 'AGUARDANDO PAGAMENTO' && confirm('Deseja realmente pagar o pedido ${pedido.idpedido}?')) {
+    if (
+      pedido.statuspedido === 'AGUARDANDO PAGAMENTO' &&
+      confirm('Deseja realmente pagar o pedido ${pedido.idpedido}?')
+    ) {
       pedido.statuspedido = 'PAGO';
       pedido.pagamentoRealizado = true;
 
@@ -86,10 +95,12 @@ export class InicialClienteComponent implements OnInit {
           this.mensagem = 'Erro ao atualizar pedido.';
           this.mensagem_detalhes = `[${err.status}] ${err.message}`;
           console.error('Erro ao atualizar pedido:', err.message);
-        }
+        },
       });
     } else {
-      alert('O pedido ${pedido.idpedido} ainda não foi lavado, aguarde para efetuar o pagamento!');
+      alert(
+        'O pedido ${pedido.idpedido} ainda não foi lavado, aguarde para efetuar o pagamento!'
+      );
     }
   }
 
@@ -98,20 +109,22 @@ export class InicialClienteComponent implements OnInit {
     if (this.filtroStatus === 'todos') {
       this.pedidosFiltrados = this.pedidos; // Mostra todos os pedidos
     } else {
-      this.pedidosFiltrados = this.pedidos.filter(pedido => pedido.statuspedido === this.mapStatus(this.filtroStatus));
+      this.pedidosFiltrados = this.pedidos.filter(
+        (pedido) => pedido.statuspedido === this.mapStatus(this.filtroStatus)
+      );
     }
   }
 
   // Mapeia os valores do filtro para os status dos pedidos
   mapStatus(status: string): string {
     const statusMap: { [key: string]: string } = {
-      'em_aberto': 'EM ABERTO',
-      'cancelado': 'CANCELADO',
-      'rejeitado': 'REJEITADO',
-      'recolhido': 'RECOLHIDO',
-      'aguardando_pagamento': 'AGUARDANDO PAGAMENTO',
-      'pago': 'PAGO',
-      'finalizado': 'FINALIZADO'
+      em_aberto: 'EM ABERTO',
+      cancelado: 'CANCELADO',
+      rejeitado: 'REJEITADO',
+      recolhido: 'RECOLHIDO',
+      aguardando_pagamento: 'AGUARDANDO PAGAMENTO',
+      pago: 'PAGO',
+      finalizado: 'FINALIZADO',
     };
     return statusMap[status] || status;
   }
@@ -120,12 +133,12 @@ export class InicialClienteComponent implements OnInit {
   getStatusClass(status: string): string {
     const statusClassMap: { [key: string]: string } = {
       'EM ABERTO': 'status-em-aberto',
-      'CANCELADO': 'status-cancelado',
-      'REJEITADO': 'status-rejeitado',
-      'RECOLHIDO': 'status-recolhido',
+      CANCELADO: 'status-cancelado',
+      REJEITADO: 'status-rejeitado',
+      RECOLHIDO: 'status-recolhido',
       'AGUARDANDO PAGAMENTO': 'status-aguardando-pagamento',
-      'PAGO': 'status-pago',
-      'FINALIZADO': 'status-finalizado'
+      PAGO: 'status-pago',
+      FINALIZADO: 'status-finalizado',
     };
     return statusClassMap[status] || '';
   }
@@ -133,11 +146,11 @@ export class InicialClienteComponent implements OnInit {
   // Confirma o logout do usuário
   confirmarLogout(event: Event): void {
     event.preventDefault();
-    
+
     const confirmed = window.confirm('Você realmente deseja sair?');
     if (confirmed) {
       this.loginService.logout();
-      this.router.navigate(['inicio/login']); // Redireciona para a tela de login após o logout
+      this.router.navigate(['/login']); // Redireciona para a tela de login após o logout
     }
   }
 }

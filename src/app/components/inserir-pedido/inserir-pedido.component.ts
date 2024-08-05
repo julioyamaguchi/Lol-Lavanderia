@@ -9,6 +9,7 @@ import { PedidoService } from '../../services/pedido/pedido.service';
 import { ModalOrcamentoComponent } from '../modal-orcamento/modal-orcamento.component';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
+import { LoginService } from '../../services/login/login.service';
 
 @Component({
   selector: 'app-inserir-pedido',
@@ -16,25 +17,25 @@ import { HttpErrorResponse } from '@angular/common/http';
   imports: [CommonModule, ModalOrcamentoComponent, RouterLink],
   templateUrl: './inserir-pedido.component.html',
   styleUrls: ['./inserir-pedido.component.css'],
-  providers: [PecaRoupaQntService, PedidoService, RoupasService]
+  providers: [PecaRoupaQntService, PedidoService, RoupasService],
 })
 export class InserirPedidoComponent implements OnInit {
-
   @ViewChild(ModalOrcamentoComponent) modalOrcamento!: ModalOrcamentoComponent;
 
   pecasroupas: PecaRoupaQuantidade[] = []; // Array de peças
-  pedido: Pedido = new Pedido(); 
-  roupas: Roupas[] = []; 
+  pedido: Pedido = new Pedido();
+  roupas: Roupas[] = [];
   prazosMap: { [id: number]: number } = {}; // Mapa de prazos
-  valorPedido: number = 0; 
-  prazoMaximo: number = 0; 
+  valorPedido: number = 0;
+  prazoMaximo: number = 0;
 
   constructor(
     private pecaroupaService: PecaRoupaQntService,
     private pedidoservice: PedidoService,
     private router: Router,
-    private roupasService: RoupasService
-  ) { }
+    private roupasService: RoupasService,
+    private loginService: LoginService
+  ) {}
 
   ngOnInit(): void {
     this.carregarPecasRoupas();
@@ -64,8 +65,11 @@ export class InserirPedidoComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.error('Erro ao carregar roupas:', (err as HttpErrorResponse).message);
-      }
+        console.error(
+          'Erro ao carregar roupas:',
+          (err as HttpErrorResponse).message
+        );
+      },
     });
   }
 
@@ -104,15 +108,17 @@ export class InserirPedidoComponent implements OnInit {
     this.pedido.valorpedido = this.valorPedido;
     this.pedido.prazo = this.prazoMaximo;
 
-    this.pedidoservice.inserir(this.pedido, this.pedido.arrayPedidosRoupas, this.valorPedido).subscribe({
-      next: () => {
-        this.pedido = new Pedido(); // Reinicia o pedido
-        this.router.navigateByUrl('/fazer-pedido');
-      },
-      error: (err: HttpErrorResponse) => {
-        console.error('Erro ao aprovar pedido:', err.message);
-      }
-    });
+    this.pedidoservice
+      .inserir(this.pedido, this.pedido.arrayPedidosRoupas, this.valorPedido)
+      .subscribe({
+        next: () => {
+          this.pedido = new Pedido(); // Reinicia o pedido
+          this.router.navigateByUrl('/fazer-pedido');
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('Erro ao aprovar pedido:', err.message);
+        },
+      });
   }
 
   onRecusar(): void {
@@ -121,8 +127,18 @@ export class InserirPedidoComponent implements OnInit {
 
   remover(event: Event, pecaroupa: PecaRoupaQuantidade): void {
     event.preventDefault(); // Previne o comportamento padrão do evento
-    this.pecasroupas = this.pecasroupas.filter(pr => pr !== pecaroupa);
+    this.pecasroupas = this.pecasroupas.filter((pr) => pr !== pecaroupa);
     this.calcularValoresPedido();
   }
-}
 
+  // Confirma o logout do usuário
+  confirmarLogout(event: Event): void {
+    event.preventDefault();
+
+    const confirmed = window.confirm('Você realmente deseja sair?');
+    if (confirmed) {
+      this.loginService.logout();
+      this.router.navigate(['/login']); // Redireciona para a tela de login após o logout
+    }
+  }
+}

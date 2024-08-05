@@ -7,7 +7,7 @@
   <a [routerLink]="['/manutencao-roupas']" class="nav-item">Manutenção<br>roupas</a>
   <a [routerLink]="['/listar-funcionario']" class="nav-item">Manutenção<br>funcionários</a>
   <a [routerLink]="['/relatorios']" class="nav-item">Relatórios</a>
-  <a [routerLink]="['/inicio/login']" class="nav-item">Sair</a>
+  <a href="#" (click)="confirmarLogout($event)" class="nav-item">Sair</a>
 </nav>
 
 <div class="conteudo-principal">
@@ -40,9 +40,8 @@
             <i class="fa fa-edit" aria-hidden="true"></i> Editar
           </a>
 
-          <a href="#" title="Remover" alt="Remover" class="btn btn-xs btn-danger"
-          (click)="removerFuncionario($event, funcionario)">
-          <i class="fa fa-times" aria-hidden="true"></i> Remover
+          <a href="#" title="Remover" alt="Remover" class="btn btn-xs btn-danger" (click)="removerFuncionario($event, funcionario)">
+            <i class="fa fa-times" aria-hidden="true"></i> Remover
           </a>
         </td>
       </tr>

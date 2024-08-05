@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RouterLink, RouterModule } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { RoupasService } from '../../../services/roupas/roupas.service';
 import { Roupas } from '../../../shared/models/roupas.model';
 import { NgxMaskPipe } from 'ngx-mask';
 import { NgxCurrencyDirective } from 'ngx-currency';
 import { HttpClientModule } from '@angular/common/http';
+import { LoginService } from '../../../services/login/login.service';
 
 @Component({
   selector: 'app-manutencao-roupas',
@@ -16,7 +17,7 @@ import { HttpClientModule } from '@angular/common/http';
     RouterLink,
     NgxMaskPipe,
     NgxCurrencyDirective,
-    HttpClientModule
+    HttpClientModule,
   ],
   templateUrl: './manutencao-roupas.component.html',
   styleUrls: ['./manutencao-roupas.component.css'],
@@ -24,7 +25,11 @@ import { HttpClientModule } from '@angular/common/http';
 export class ManutencaoRoupasComponent implements OnInit {
   roupas: Roupas[] = [];
 
-  constructor(private roupaService: RoupasService) { }
+  constructor(
+    private roupaService: RoupasService,
+    private router: Router,
+    private loginService: LoginService
+  ) {}
 
   ngOnInit(): void {
     this.listarTodas();
@@ -38,7 +43,7 @@ export class ManutencaoRoupasComponent implements OnInit {
       error: (error) => {
         console.error(`Erro ao listar roupas: ${error.message}`);
         alert('Erro ao carregar roupas. Tente novamente mais tarde.');
-      }
+      },
     });
   }
 
@@ -52,9 +57,18 @@ export class ManutencaoRoupasComponent implements OnInit {
         error: (error) => {
           console.error(`Erro ao remover roupa: ${error.message}`);
           alert('Erro ao remover a peça de roupa.');
-        }
+        },
       });
     }
   }
-}
 
+  confirmarLogout(event: Event): void {
+    event.preventDefault();
+
+    const confirmed = window.confirm('Você realmente deseja sair?');
+    if (confirmed) {
+      this.loginService.logout();
+      this.router.navigate(['/login']); // Redireciona para a tela de login após o logout
+    }
+  }
+}

@@ -1,7 +1,6 @@
 package br.net.lol_lavanderia.crud.rest;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -43,9 +42,6 @@ public class PedidoREST {
   public static List<Pedido> pedidos = new ArrayList<>();
 
   // instancia de pedido para teste
-  static {
-    pedidos.add(new Pedido(cliente, 1, "novo", 22.00, 5, 20230721, listaPeca));
-  }
 
   @GetMapping("/pedidos")
   public ResponseEntity<List<Pedido>> obterTodosPedidos() {
@@ -80,7 +76,7 @@ public class PedidoREST {
     Pedido p = pedidos.stream().filter(usu -> usu.getIdPedido() == id).findAny().orElse(null);
 
     if (p != null) {
-      p.setCliente(pedido.getCliente());
+      p.setUsuario(pedido.getUsuario());
       p.setStatus(pedido.getStatus());
       p.setValorTotal(pedido.getValorTotal());
       p.setPrazo(pedido.getPrazo());

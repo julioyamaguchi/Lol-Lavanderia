@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RouterLink, RouterModule } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { PedidoService } from '../../services/pedido/pedido.service';
 import { Pedido } from '../../shared/models/pedido.model';
 import { PecaRoupaQntService } from '../../services/peca-roupa-qnt.service';
 import { FormsModule, NgForm } from '@angular/forms';
 import { PecaRoupaQuantidade } from '../../shared/models/peca-roupa-quantidade.model';
+import { LoginService } from '../../services/login/login.service';
 
 @Component({
   selector: 'app-fazer-pedido',
@@ -25,7 +26,9 @@ export class FazerPedidoComponent implements OnInit {
 
   constructor(
     private pedidoService: PedidoService,
-    private pecaRoupaQntService: PecaRoupaQntService
+    private pecaRoupaQntService: PecaRoupaQntService,
+    private router: Router,
+    private loginService: LoginService
   ) {}
 
   ngOnInit(): void {
@@ -52,18 +55,20 @@ export class FazerPedidoComponent implements OnInit {
 
   fazerPedido(form: NgForm): void {
     if (form.valid) {
-      this.pedidoService.inserir(this.pedido, this.pecasRoupa, this.valorTotal).subscribe({
-        next: () => {
-          this.mensagem = 'Pedido realizado com sucesso.';
-          form.resetForm();
-          this.listarTodos();
-        },
-        error: (err) => {
-          this.mensagem = 'Erro ao realizar pedido.';
-          this.mensagem_detalhes = `[${err.status}] ${err.message}`;
-          console.error('Erro ao realizar pedido:', err);
-        }
-      });
+      this.pedidoService
+        .inserir(this.pedido, this.pecasRoupa, this.valorTotal)
+        .subscribe({
+          next: () => {
+            this.mensagem = 'Pedido realizado com sucesso.';
+            form.resetForm();
+            this.listarTodos();
+          },
+          error: (err) => {
+            this.mensagem = 'Erro ao realizar pedido.';
+            this.mensagem_detalhes = `[${err.status}] ${err.message}`;
+            console.error('Erro ao realizar pedido:', err);
+          },
+        });
     } else {
       this.mensagem = 'Por favor, preencha todos os campos corretamente.';
     }
@@ -79,7 +84,9 @@ export class FazerPedidoComponent implements OnInit {
       this.pedidoService.atualizar(pedido).subscribe({
         next: () => {
           this.mensagem = `O pedido ${pedido.idpedido} foi cancelado.`;
-          this.pedidos = this.pedidos.filter(p => p.idpedido !== pedido.idpedido);
+          this.pedidos = this.pedidos.filter(
+            (p) => p.idpedido !== pedido.idpedido
+          );
         },
         error: (err) => {
           this.mensagem = 'Erro ao cancelar o pedido.';
@@ -87,6 +94,17 @@ export class FazerPedidoComponent implements OnInit {
           console.error('Erro ao cancelar pedido:', err);
         },
       });
+    }
+  }
+
+  // Confirma o logout do usuário
+  confirmarLogout(event: Event): void {
+    event.preventDefault();
+
+    const confirmed = window.confirm('Você realmente deseja sair?');
+    if (confirmed) {
+      this.loginService.logout();
+      this.router.navigate(['/login']); // Redireciona para a tela de login após o logout
     }
   }
 }
